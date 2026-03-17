@@ -2,19 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "css/**/*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "js/**/*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "images/**/*",
+      "src": "frontend/views/**",
       "use": "@vercel/static"
     }
   ],
@@ -30,64 +18,11 @@
       }
     },
     {
-      "src": "/css/(.*)",
-      "dest": "/css/$1"
-    },
-    {
-      "src": "/js/(.*)",
-      "dest": "/js/$1"
-    },
-    {
-      "src": "/images/(.*)",
-      "dest": "/images/$1"
-    },
-    {
-      "src": "/products",
-      "dest": "/products.html"
-    },
-    {
-      "src": "/products/:id",
-      "dest": "/products.html"
-    },
-    {
-      "src": "/cart",
-      "dest": "/cart.html"
-    },
-    {
-      "src": "/checkout",
-      "dest": "/checkout.html"
-    },
-    {
-      "src": "/orders",
-      "dest": "/orders.html"
-    },
-    {
-      "src": "/order-confirmation",
-      "dest": "/order-confirmation.html"
-    },
-    {
-      "src": "/login",
-      "dest": "/login.html"
-    },
-    {
-      "src": "/register",
-      "dest": "/register.html"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "/dashboard.html"
-    },
-    {
-      "src": "/admin",
-      "dest": "/admin-dashboard.html"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/$1.html"
+      "dest": "/$1"
     }
   ]
 }
