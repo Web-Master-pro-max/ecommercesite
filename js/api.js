@@ -41,6 +41,11 @@ async function apiCall(endpoint, method = 'GET', data = null) {
         }
     };
 
+    // Add authorization header if token exists
+    if (localStorage.getItem('token')) {
+        options.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+    }
+
     if (data) {
         options.body = JSON.stringify(data);
     }
