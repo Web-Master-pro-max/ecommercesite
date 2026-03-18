@@ -25,11 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================== UTILITY & API FUNCTIONS ====================
 
 // Update this line to use your EC2 IP for local development
-// Replace the API_BASE_URL line with this:
+// Change this line from your old IP to the new one
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://13.62.223.231:3000/api'  // Local development - your EC2 IP
-  : '/api';  // Production - use relative path to go through Vercel proxy
-
+  ? 'http://13.62.153.215:3000/api'  // Updated to new IP
+  : '/api';  // Production - use relative path
 console.log('API Base URL:', API_BASE_URL); // Add this for debugging
 
 // ==================== API CALLS ====================
