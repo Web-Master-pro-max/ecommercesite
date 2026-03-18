@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#232f3e">
     <title>Credits - ShopHub</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Credits Page Styles */
+        /* Credits Page Styles - Mobile Optimized */
         .credits-container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
         }
 
         @media (min-width: 768px) {
@@ -22,171 +23,387 @@
 
         .credits-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .credits-header {
+                margin-bottom: 3rem;
+            }
         }
 
         .credits-header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .credits-header h1 i {
+            color: var(--flipkart-blue);
+            font-size: 2rem;
         }
 
         @media (min-width: 768px) {
             .credits-header h1 {
                 font-size: 3rem;
             }
+            
+            .credits-header h1 i {
+                font-size: 3rem;
+            }
         }
 
         .credits-header p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #666;
             max-width: 600px;
             margin: 0 auto;
+            padding: 0 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .credits-header p {
+                font-size: 1.1rem;
+            }
         }
 
         .credits-section {
             background: white;
             border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
+        @media (min-width: 768px) {
+            .credits-section {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
         .credits-section h2 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .credits-section h2 i {
             color: var(--flipkart-blue);
+            font-size: 1.3rem;
+        }
+
+        @media (min-width: 768px) {
+            .credits-section h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .credits-section h2 i {
+                font-size: 1.5rem;
+            }
         }
 
         .lead-developer {
             background: linear-gradient(135deg, var(--flipkart-blue), #1a4d8c);
             color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .lead-developer {
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
         }
 
         .lead-developer h3 {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .lead-developer h3 i {
+            font-size: 1.4rem;
+        }
+
+        @media (min-width: 768px) {
+            .lead-developer h3 {
+                font-size: 1.8rem;
+            }
+            
+            .lead-developer h3 i {
+                font-size: 1.8rem;
+            }
         }
 
         .lead-developer p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
             margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        @media (min-width: 768px) {
+            .lead-developer p {
+                font-size: 1.1rem;
+            }
         }
 
         .developer-card {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1.5rem;
+            padding: 1.2rem;
             background: #f8f9fa;
             border-radius: 8px;
             margin-bottom: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .developer-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .developer-card:active {
+            transform: scale(0.99);
+            background: #f0f0f0;
+        }
+
+        @media (min-width: 768px) {
+            .developer-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .developer-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
         }
 
         .developer-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--flipkart-blue), #1a4d8c);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             flex-shrink: 0;
         }
 
+        @media (min-width: 768px) {
+            .developer-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+
+        .developer-info {
+            flex: 1;
+            min-width: 0; /* Prevents text overflow */
+        }
+
         .developer-info h4 {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 768px) {
+            .developer-info h4 {
+                font-size: 1.2rem;
+                margin-bottom: 0.25rem;
+            }
         }
 
         .developer-info p {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 768px) {
+            .developer-info p {
+                font-size: 0.9rem;
+            }
         }
 
         .tech-stack {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
             margin-top: 1rem;
+        }
+
+        @media (min-width: 480px) {
+            .tech-stack {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .tech-stack {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
         }
 
         .tech-item {
             background: #f8f9fa;
-            padding: 1rem;
+            padding: 1rem 0.8rem;
             border-radius: 8px;
             text-align: center;
             border: 1px solid #e9ecef;
+            transition: transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tech-item:active {
+            transform: scale(0.98);
+            background: #f0f0f0;
+        }
+
+        @media (min-width: 768px) {
+            .tech-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            }
         }
 
         .tech-item i {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: var(--flipkart-blue);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             display: block;
         }
 
+        @media (min-width: 768px) {
+            .tech-item i {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
         .tech-item h5 {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #333;
             margin: 0;
         }
 
+        @media (min-width: 768px) {
+            .tech-item h5 {
+                font-size: 0.9rem;
+            }
+        }
+
         .acknowledgments {
             background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 12px;
             text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .acknowledgments {
+                padding: 2rem;
+                margin-top: 2rem;
+            }
         }
 
         .acknowledgments h3 {
             color: #333;
             margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .acknowledgments h3 i {
+            color: var(--flipkart-blue);
+            font-size: 1.2rem;
+        }
+
+        @media (min-width: 768px) {
+            .acknowledgments h3 {
+                font-size: 1.4rem;
+            }
+            
+            .acknowledgments h3 i {
+                font-size: 1.4rem;
+            }
         }
 
         .acknowledgments p {
             color: #666;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .acknowledgments p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (min-width: 768px) {
+            .acknowledgments p {
+                font-size: 1rem;
+                line-height: 1.6;
+                margin-bottom: 1rem;
+            }
         }
 
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 768px) {
+            .social-links {
+                gap: 1rem;
+                margin-top: 2rem;
+            }
         }
 
         .social-link {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: var(--flipkart-blue);
             color: white;
@@ -194,36 +411,107 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .social-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(40, 116, 240, 0.3);
+        .social-link:active {
+            transform: scale(0.95);
+            background: #1a4d8c;
+        }
+
+        @media (min-width: 768px) {
+            .social-link {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .social-link:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(40, 116, 240, 0.3);
+            }
         }
 
         .back-to-home {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .back-to-home {
+                margin-top: 3rem;
+            }
         }
 
         .back-to-home a {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             background: var(--flipkart-blue);
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
+            width: 100%;
+            max-width: 280px;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .back-to-home a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 116, 240, 0.3);
+        .back-to-home a:active {
+            transform: scale(0.98);
+            background: #1a4d8c;
+        }
+
+        @media (min-width: 480px) {
+            .back-to-home a {
+                width: auto;
+                min-width: 250px;
+                font-size: 1rem;
+                padding: 0.9rem 2rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .back-to-home a {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .back-to-home a:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(40, 116, 240, 0.3);
+            }
+        }
+
+        /* Fix for footer social links conflict */
+        footer .social-links {
+            margin-top: 0;
+            gap: 0.5rem;
+        }
+
+        footer .social-link {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.1);
+        }
+
+        footer .social-link:active {
+            background: var(--flipkart-blue);
+        }
+
+        @media (min-width: 768px) {
+            footer .social-link {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -270,7 +558,7 @@
     <div class="container">
         <div class="credits-container">
             <div class="credits-header">
-                <h1><i class="fas fa-heart"></i> Credits</h1>
+                <h1><i class="fas fa-heart" style="color: #ff6b6b;"></i> Credits</h1>
                 <p>Meet the amazing people who made ShopHub possible</p>
             </div>
 
@@ -341,16 +629,16 @@
 
             <!-- Social Links -->
             <div class="social-links">
-                <a href="#" class="social-link" title="Facebook">
+                <a href="#" class="social-link" title="Facebook" aria-label="Facebook">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" class="social-link" title="Twitter">
+                <a href="#" class="social-link" title="Twitter" aria-label="Twitter">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="#" class="social-link" title="Instagram">
+                <a href="#" class="social-link" title="Instagram" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="#" class="social-link" title="LinkedIn">
+                <a href="#" class="social-link" title="LinkedIn" aria-label="LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
             </div>
@@ -366,43 +654,45 @@
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About ShopHub</h3>
-                <ul>
-                    <li><a href="/about">About Us</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                    <li><a href="/careers">Careers</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="/payments">Payments</a></li>
-                    <li><a href="/shipping">Shipping</a></li>
-                    <li><a href="/returns">Returns</a></li>
-                    <li><a href="/faq">FAQ</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Policy</h3>
-                <ul>
-                    <li><a href="/privacy">Privacy Policy</a></li>
-                    <li><a href="/terms">Terms of Use</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Connect With Us</h3>
-                <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About ShopHub</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Help</h3>
+                    <ul>
+                        <li><a href="/payments">Payments</a></li>
+                        <li><a href="/shipping">Shipping</a></li>
+                        <li><a href="/returns">Returns</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Policy</h3>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Use</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 ShopHub. All rights reserved.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 ShopHub. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -451,12 +741,14 @@
             const dashboardLink = document.getElementById('dashboard-link');
             const adminNavLink = document.getElementById('admin-nav-link');
 
-            if (authStatus.authenticated) {
+            if (authStatus && authStatus.authenticated) {
                 authButtons.style.display = 'none';
                 dashboardLink.style.display = 'block';
 
                 if (authStatus.user && authStatus.user.role === 'admin') {
                     adminNavLink.style.display = 'block';
+                } else {
+                    adminNavLink.style.display = 'none';
                 }
             } else {
                 authButtons.style.display = 'flex';
