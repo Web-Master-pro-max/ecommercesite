@@ -113,41 +113,75 @@
             justify-content: center;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 0.5rem;
-            align-items: center;
-            margin-left: auto;
-        }
+       /* Update these sections in your existing CSS */
 
-        @media (min-width: 480px) {
-            .nav-links {
-                gap: 0.8rem;
-            }
-        }
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 0.2rem;  /* Reduced from 0.5rem */
+    align-items: center;
+    margin-left: auto;
+    flex-wrap: wrap;  /* Allow wrapping */
+    justify-content: flex-end;
+}
 
-        .nav-links li a {
-            color: white;
-            font-size: 0.8rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 0.5rem;
-            min-width: 44px;
-            min-height: 44px;
-            justify-content: center;
-        }
+@media (min-width: 480px) {
+    .nav-links {
+        gap: 0.4rem;  /* Adjusted for tablet */
+    }
+}
 
-        @media (min-width: 480px) {
-            .nav-links li a {
-                font-size: 0.9rem;
-                flex-direction: row;
-                gap: 0.5rem;
-                padding: 0.5rem 0.8rem;
-            }
-        }
+@media (min-width: 768px) {
+    .nav-links {
+        gap: 0.8rem;
+        flex-wrap: nowrap;  /* No wrapping on desktop */
+    }
+}
+
+.nav-links li a {
+    color: white;
+    font-size: 0.7rem;  /* Slightly smaller for mobile */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0.3rem 0.3rem;  /* Reduced padding */
+    min-width: 36px;  /* Smaller minimum width */
+    min-height: 36px;  /* Smaller minimum height */
+    justify-content: center;
+}
+
+@media (min-width: 480px) {
+    .nav-links li a {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.5rem;
+        min-width: 40px;
+        min-height: 40px;
+    }
+}
+
+@media (min-width: 768px) {
+    .nav-links li a {
+        font-size: 0.9rem;
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.5rem 0.8rem;
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* For very small screens, hide text and show only icons */
+@media (max-width: 400px) {
+    .nav-links li a .nav-text {
+        display: none;
+    }
+    
+    .nav-links li a {
+        font-size: 1rem;
+        padding: 0.3rem;
+    }
+}
 
         .cart-count {
             position: absolute;
