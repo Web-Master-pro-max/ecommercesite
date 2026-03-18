@@ -37,6 +37,14 @@
       "src": "/js/(.*)",
       "dest": "/js/$1"
     },
+    { "src": "/credits",
+       "dest": "/credits.html" 
+      },
+      {
+        "src": "/credits/(.*)",
+        "dest": "/credits.html"
+      },
+
     {
       "src": "/images/(.*)",
       "dest": "/images/$1"
