@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Update this line to use your EC2 IP for local development
 // Replace the API_BASE_URL line with this:
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://13.62.223.231:3000/api'  // Local development
-  : 'https://project-seven-zeta-69.vercel.app/api';  // Use full URL instead of /api
+  ? 'http://13.62.223.231:3000/api'  // Local development - your EC2 IP
+  : '/api';  // Production - use relative path to go through Vercel proxy
 
 console.log('API Base URL:', API_BASE_URL); // Add this for debugging
 
