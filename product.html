@@ -296,6 +296,46 @@
             width: 16px;
         }
 
+        .product-specifications {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .specifications-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(70, 130, 180, 0.15);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .spec-item i {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            background: rgba(40, 116, 255, 0.12);
+            border-radius: 8px;
+            color: var(--flipkart-blue);
+            font-size: 1.1rem;
+        }
+
+        .spec-item span {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
         .loading-spinner {
             display: flex;
             flex-direction: column;
@@ -486,6 +526,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="product-specifications">
+                        <h3 class="features-title">Product Highlights</h3>
+                        <div class="specifications-list" id="product-specs">
+                            <!-- Specs will be populated by JavaScript -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -602,9 +649,87 @@
             const rating = product.rating || 4.5;
             document.getElementById('product-rating').textContent = `(${rating}) • ${product.review_count || 124} reviews`;
 
+            // Product specifications
+            renderProductSpecifications(product);
+
             // Show product container
             document.getElementById('product-container').style.display = 'block';
         }
+
+        function renderProductSpecifications(product) {
+            const specsContainer = document.getElementById('product-specs');
+            if (!specsContainer) return;
+
+            // Helper to map keys to icons for common product specs
+            const iconMap = {
+                ram: 'fa-microchip',
+                storage: 'fa-hdd',
+                rom: 'fa-hdd',
+                battery: 'fa-battery-full',
+                camera: 'fa-camera',
+                display: 'fa-mobile-alt',
+                processor: 'fa-microchip',
+                cpu: 'fa-microchip',
+                os: 'fa-robot',
+                weight: 'fa-weight',
+                dimensions: 'fa-ruler-combined',
+                connectivity: 'fa-wifi'
+            };
+
+            const specs = [];
+
+            if (Array.isArray(product.specs) && product.specs.length) {
+                product.specs.forEach(item => {
+                    if (item && (item.label || item.name) && item.value) {
+                        specs.push({
+                            label: item.label || item.name,
+                            value: item.value,
+                            icon: item.icon || iconMap[(item.label || item.name).toLowerCase()] || 'fa-tag'
+                        });
+                    }
+                });
+            } else if (product.specifications && typeof product.specifications === 'object') {
+                Object.entries(product.specifications).forEach(([key, value]) => {
+                    specs.push({
+                        label: key.replace(/_/g, ' '),
+                        value: value,
+                        icon: iconMap[key.toLowerCase()] || 'fa-tag'
+                    });
+                });
+            } else {
+                // Fallback to commonly expected fields
+                const fallbackSpecs = {
+                    'RAM': product.ram,
+                    'Storage': product.storage || product.rom || product.internal_storage,
+                    'Processor': product.processor || product.cpu,
+                    'Camera': product.camera || product.camera_specs,
+                    'Display': product.display || product.screen,
+                    'Battery': product.battery
+                };
+                Object.entries(fallbackSpecs).forEach(([label, value]) => {
+                    if (value) {
+                        specs.push({
+                            label,
+                            value,
+                            icon: iconMap[label.toLowerCase()] || 'fa-tag'
+                        });
+                    }
+                });
+            }
+
+            if (specs.length === 0) {
+                specsContainer.innerHTML = `<div class="spec-item"><i class="fas fa-info-circle"></i><span>No specifications available</span></div>`;
+                return;
+            }
+
+            specsContainer.innerHTML = specs.map(spec => `
+                <div class="spec-item">
+                    <i class="fas ${spec.icon}"></i>
+                    <span><strong>${spec.label}:</strong> ${spec.value}</span>
+                </div>
+            `).join('');
+        }
+
 
         // Quantity functions
         function changeQuantity(delta) {
