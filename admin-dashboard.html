@@ -1136,6 +1136,14 @@
                         <label>Product Image URL</label>
                         <input type="url" id="product-image" class="form-control" placeholder="https://...">
                     </div>
+
+                    <div id="product-specs-section" style="display: none; margin-top: 1rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 1rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <h4 style="margin-bottom: 0.8rem;">Product Specifications</h4>
+                            <button type="button" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.4rem 0.7rem;" onclick="addSpecRow()">+ Add spec</button>
+                        </div>
+                        <div id="product-specs-rows" style="display: grid; gap: 0.6rem;"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1429,9 +1437,11 @@
             currentEditingProductId = null;
             document.getElementById('product-modal-title').textContent = 'Add Product';
             document.getElementById('product-form').reset();
+            clearSpecInputs();
             
             await loadCategoryOptions();
-            
+            updateSpecsSectionVisibility('');
+
             document.getElementById('product-modal').classList.add('active');
         }
 
@@ -1445,9 +1455,137 @@
                     select.innerHTML = '<option value="">Select Category</option>' +
                         data.categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
                 }
+
+                // Show/hide specs section when category changes
+                select.onchange = () => {
+                    updateSpecsSectionVisibility(select.value);
+                };
             } catch (error) {
                 console.error('Error loading categories:', error);
             }
+        }
+
+        const categorySpecTemplates = {
+            Electronics: [
+                { label: 'RAM' },
+                { label: 'Storage' },
+                { label: 'Camera' },
+                { label: 'Display' },
+                { label: 'Battery' }
+            ],
+            Fashion: [
+                { label: 'Material Composition' },
+                { label: 'Sleeve Type' },
+                { label: 'Length' },
+                { label: 'Fit' }
+            ],
+            'Home & Kitchen': [
+                { label: 'Material' },
+                { label: 'Dimensions' },
+                { label: 'Weight' },
+                { label: 'Warranty' }
+            ],
+            Books: [
+                { label: 'Author' },
+                { label: 'Publisher' },
+                { label: 'Pages' },
+                { label: 'Language' }
+            ],
+            Sports: [
+                { label: 'Material' },
+                { label: 'Size' },
+                { label: 'Weight' },
+                { label: 'Brand' }
+            ]
+        };
+
+        function updateSpecsSectionVisibility(category) {
+            const section = document.getElementById('product-specs-section');
+            if (!section) return;
+
+            const shouldShow = !!category;
+            section.style.display = shouldShow ? '' : 'none';
+
+            if (shouldShow) {
+                // If no specs are present, prefill defaults for the selected category
+                const existing = getSpecsFromInputs();
+                if (!existing.length) {
+                    const defaults = categorySpecTemplates[category] || [];
+                    setSpecRows(defaults.map(d => ({ label: d.label, value: '' })));
+                }
+            }
+        }
+
+        function createSpecRow(label = '', value = '') {
+            const row = document.createElement('div');
+            row.style.display = 'grid';
+            row.style.gridTemplateColumns = '1fr 1fr auto';
+            row.style.gap = '0.6rem';
+
+            const labelGroup = document.createElement('div');
+            labelGroup.className = 'form-group';
+            labelGroup.style.marginBottom = '0';
+            labelGroup.innerHTML = `
+                <label>Label</label>
+                <input type="text" class="form-control spec-label" value="${label}" placeholder="Specification name">
+            `;
+
+            const valueGroup = document.createElement('div');
+            valueGroup.className = 'form-group';
+            valueGroup.style.marginBottom = '0';
+            valueGroup.innerHTML = `
+                <label>Value</label>
+                <input type="text" class="form-control spec-value" value="${value}" placeholder="Specification value">
+            `;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-outline';
+            removeBtn.style.alignSelf = 'end';
+            removeBtn.style.height = '38px';
+            removeBtn.textContent = 'Remove';
+            removeBtn.onclick = () => row.remove();
+
+            row.appendChild(labelGroup);
+            row.appendChild(valueGroup);
+            row.appendChild(removeBtn);
+
+            return row;
+        }
+
+        function addSpecRow(label = '', value = '') {
+            const container = document.getElementById('product-specs-rows');
+            if (!container) return;
+            container.appendChild(createSpecRow(label, value));
+        }
+
+        function setSpecRows(specs = []) {
+            const container = document.getElementById('product-specs-rows');
+            if (!container) return;
+            container.innerHTML = '';
+            specs.forEach(spec => {
+                addSpecRow(spec.label || '', spec.value || '');
+            });
+        }
+
+        function clearSpecInputs() {
+            // Clear any existing spec rows (used when adding a new product)
+            setSpecRows([]);
+        }
+
+        function getSpecsFromInputs() {
+            const container = document.getElementById('product-specs-rows');
+            if (!container) return [];
+
+            const rows = Array.from(container.children);
+            return rows.map(row => {
+                const labelEl = row.querySelector('.spec-label');
+                const valueEl = row.querySelector('.spec-value');
+                const label = labelEl?.value?.trim();
+                const value = valueEl?.value?.trim();
+                if (!label || !value) return null;
+                return { label, value };
+            }).filter(Boolean);
         }
 
         // Edit product
@@ -1467,7 +1605,17 @@
                     
                     await loadCategoryOptions();
                     document.getElementById('product-category').value = product.category || '';
-                    
+
+                    updateSpecsSectionVisibility(product.category || '');
+
+                    const existingSpecs = Array.isArray(product.specs)
+                        ? product.specs
+                        : product.specifications
+                            ? Object.entries(product.specifications).map(([k, v]) => ({ label: k, value: v }))
+                            : [];
+
+                    setSpecRows(existingSpecs);
+
                     document.getElementById('product-modal').classList.add('active');
                 }
             } catch (error) {
@@ -1487,6 +1635,10 @@
                 stock: parseInt(document.getElementById('product-stock').value),
                 image_url: document.getElementById('product-image').value
             };
+
+            // Include specs (empty specs will clear existing specs on update)
+            const specs = getSpecsFromInputs();
+            productData.specs = specs.length ? specs : null;
 
             try {
                 if (currentEditingProductId) {
