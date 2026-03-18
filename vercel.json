@@ -12,10 +12,6 @@
     {
       "src": "js/**/*.js",
       "use": "@vercel/static"
-    },
-    {
-      "src": "images/**/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -82,7 +78,7 @@
       "dest": "/admin-dashboard.html"
     },
     {
-      "src: "/",
+      "src": "/",
       "dest": "/index.html"
     }
   ]
