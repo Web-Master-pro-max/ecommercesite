@@ -46,7 +46,11 @@
       "dest": "/products.html"
     },
     {
-      "src": "/products/:id",
+      "src": "/products/(.*)",
+      "dest": "/products.html"
+    },
+    {
+      "src": "/product/(.*)",
       "dest": "/products.html"
     },
     {
