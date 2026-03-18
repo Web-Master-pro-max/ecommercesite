@@ -1979,7 +1979,36 @@
         function showProductList() {
             document.getElementById('product-detail-view')?.style.setProperty('display', 'none');
             document.getElementById('product-list-view')?.style.setProperty('display', '');
+
+            // If a category is passed via URL, pre-select it in the filters
+            applyCategoryFromUrl();
+
             loadProducts();
+        }
+
+        function applyCategoryFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            if (!category) return;
+
+            const checkboxes = document.querySelectorAll('input[name="category"]');
+            let matched = false;
+            checkboxes.forEach(cb => {
+                if (cb.value.toLowerCase() === category.toLowerCase()) {
+                    cb.checked = true;
+                    matched = true;
+                } else if (cb.value === 'all') {
+                    cb.checked = false;
+                } else {
+                    cb.checked = false;
+                }
+            });
+
+            // If no matching category is found, fall back to All Categories
+            if (!matched) {
+                const allCheckbox = document.querySelector('input[name="category"][value="all"]');
+                if (allCheckbox) allCheckbox.checked = true;
+            }
         }
 
         async function showProductDetail(productId) {
@@ -2242,15 +2271,8 @@
                 });
             });
 
-            // Close mobile filters when clicking on filter option
-            document.querySelectorAll('.filter-checkbox input, .filter-section button').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    if (window.innerWidth < 1024 && !e.target.closest('button')?.classList.contains('btn-block')) {
-                        // Don't close immediately, let the filter apply
-                        setTimeout(() => closeMobileFilters(), 300);
-                    }
-                });
-            });
+            // Note: Mobile filter panel is closed only when the user explicitly applies or clears filters
+            // (applyFilters and clearFilters already call closeMobileFilters()).
         });
     </script>
 </body>
