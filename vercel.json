@@ -62,6 +62,10 @@
       "dest": "/products.html"
     },
     {
+      "src": "/profile",
+      "dest": "/profile.html"
+    },
+    {
       "src": "/cart",
       "dest": "/cart.html"
     },
