@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>My Profile - ShopHub</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -23,15 +23,26 @@
         }
 
         .profile-avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--flipkart-blue), #1a4d8c);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1rem;
-            font-size: 2.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar i {
+            font-size: 3rem;
             color: white;
         }
 
@@ -185,6 +196,59 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Upload photo button */
+        .upload-photo-btn {
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-photo-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Profile photo container */
+        .profile-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-avatar-wrapper .upload-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--flipkart-blue);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar-wrapper .upload-overlay i {
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .profile-avatar-wrapper .upload-overlay:hover {
+            transform: scale(1.1);
+            background: #1a4d8c;
+        }
+
+        /* Hide file input */
+        #photo-upload-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -228,8 +292,14 @@
 
         <!-- Profile Header -->
         <div class="profile-header">
-            <div class="profile-avatar">
-                <i class="fas fa-user"></i>
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar" id="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="upload-overlay" onclick="document.getElementById('photo-upload-input').click()" title="Change photo">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <input type="file" id="photo-upload-input" name="photo" accept="image/*" style="display: none;" onchange="uploadProfilePhoto(event)">
             </div>
             <h1 class="profile-name" id="user-name">Loading...</h1>
             <p class="profile-email" id="user-email">Loading...</p>
@@ -350,6 +420,7 @@
     <script src="/js/api.js"></script>
     <script>
         let currentUser = null;
+        let currentProfilePhotoFile = null;
 
         // Load user profile
         async function loadProfile() {
@@ -359,12 +430,8 @@
                     currentUser = response.user;
                     populateProfileForm(response.user);
                     
-                    // Always update avatar using helper function from api.js
-                    const avatarContainer = document.querySelector('.profile-avatar');
-                    if (avatarContainer) {
-                        const avatarUrl = getAvatarUrl(response.user);
-                        avatarContainer.innerHTML = `<img src="${avatarUrl}" alt="${response.user.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-                    }
+                    // Update avatar using helper function from api.js
+                    updateProfileAvatar(response.user);
                 }
             } catch (error) {
                 console.error('Error loading profile:', error);
@@ -379,17 +446,104 @@
             }
         }
 
+        // Update profile avatar display
+        function updateProfileAvatar(user) {
+            const avatarContainer = document.getElementById('profile-avatar');
+            if (!avatarContainer) return;
+
+            if (user && user.avatar) {
+                const avatarUrl = getAvatarUrl(user);
+                console.log('Avatar URL:', avatarUrl); // Debug log
+                avatarContainer.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                avatarContainer.innerHTML = '<i class="fas fa-user"></i>';
+            }
+        }
+
+        // Upload profile photo
+        async function uploadProfilePhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('File size must be less than 5MB', 'danger');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showAlert('Please select an image file', 'danger');
+                event.target.value = '';
+                return;
+            }
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const avatarContainer = document.getElementById('profile-avatar');
+                if (avatarContainer) {
+                    avatarContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                }
+            };
+            reader.readAsDataURL(file);
+
+            // Upload to server
+            const btn = document.getElementById('update-profile-btn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+            try {
+                const formData = new FormData();
+                formData.append('photo', file);
+
+                const response = await fetch('/api/users/upload-photo', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Upload failed');
+                }
+
+                const result = await response.json();
+                if (result.success && result.avatar) {
+                    // Update the user's avatar in currentUser
+                    if (currentUser) {
+                        currentUser.avatar = result.avatar;
+                    }
+                    
+                    // Update the avatar display with the server URL
+                    updateProfileAvatar(currentUser);
+                    showAlert('Profile photo updated successfully!', 'success');
+                    
+                    // Also update the navbar avatar
+                    if (typeof updateNavBarAvatar === 'function') {
+                        updateNavBarAvatar(result.avatar);
+                    }
+                }
+            } catch (error) {
+                console.error('Error uploading photo:', error);
+                showAlert('Error uploading photo: ' + error.message, 'danger');
+                // Revert to previous avatar on error
+                updateProfileAvatar(currentUser);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                event.target.value = ''; // Clear the file input
+            }
+        }
+
         // Populate form with user data
         function populateProfileForm(user) {
             document.getElementById('user-name').textContent = user.name;
             document.getElementById('user-email').textContent = user.email;
-
-            // Always update avatar using helper function from api.js
-            const profileAvatar = document.querySelector('.profile-avatar');
-            if (profileAvatar) {
-                const avatarUrl = getAvatarUrl(user);
-                profileAvatar.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-            }
 
             document.getElementById('name').value = user.name || '';
             document.getElementById('email').value = user.email || '';
@@ -411,6 +565,12 @@
                     showAlert('Profile updated successfully!', 'success');
                     currentUser = response.user;
                     populateProfileForm(response.user);
+                    updateProfileAvatar(response.user);
+                    
+                    // Update navbar user name
+                    if (typeof updateNavBarUser === 'function') {
+                        updateNavBarUser(response.user);
+                    }
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
@@ -471,6 +631,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadProfile();
             updateCartCount();
+            updateAuthUI();
         });
 
         // Utility functions
@@ -520,6 +681,34 @@
             } catch (error) {
                 console.error('Error updating cart count:', error);
             }
+        }
+
+        async function updateAuthUI() {
+            const authButtons = document.getElementById('auth-buttons');
+            if (!authButtons) return;
+
+            try {
+                const status = await authAPI.checkAuth();
+
+                if (status.authenticated && status.user) {
+                    const avatarUrl = getAvatarUrl(status.user);
+                    authButtons.innerHTML = `
+                        <span class="auth-user auth-user-desktop">Hi, ${status.user.name}</span>
+                        <button class="user-avatar-btn" onclick="window.location.href='/dashboard'" title="Dashboard">
+                            <img src="${avatarUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error updating auth UI:', error);
+            }
+        }
+
+        function logout() {
+            authAPI.logout().finally(() => {
+                window.location.href = '/';
+            });
         }
 
         function performSearch() {
