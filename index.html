@@ -1391,7 +1391,7 @@
                 if (data.categories && data.categories.length > 0) {
                     container.innerHTML = data.categories.map(category => `
                         <div class="category-card" onclick="window.location.href='/products.html?category=${encodeURIComponent(category)}'">
-                            <div class="category-image" style="background: linear-gradient(135deg, #FFB088 0%, #FF8A9B 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                            <div class="category-image">
                                 ${categoryIcons[category.toLowerCase()] || '📦'}
                             </div>
                             <div class="category-overlay">
