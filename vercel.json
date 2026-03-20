@@ -16,10 +16,6 @@
     {
       "src": "images/**/*",
       "use": "@vercel/static"
-    },
-    {
-      "src": "uploads/**/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -31,6 +27,14 @@
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Credentials": "true"
+      }
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "http://13.62.153.215:3000/uploads/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, max-age=31536000, immutable"
       }
     },
     {
@@ -46,35 +50,12 @@
       "dest": "/images/$1"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "http://13.62.153.215:3000/uploads/$1",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    },
-    { "src": "/credits",
-       "dest": "/credits.html" 
-      },
-      {
-        "src": "/credits/(.*)",
-        "dest": "/credits.html"
-      },
-    {
       "src": "/products",
       "dest": "/products.html"
     },
     {
       "src": "/products/(.*)",
       "dest": "/products.html"
-    },
-    {
-      "src": "/product/(.*)",
-      "dest": "/products.html"
-    },
-    {
-      "src": "/profile",
-      "dest": "/profile.html"
     },
     {
       "src": "/cart",
@@ -107,6 +88,10 @@
     {
       "src": "/admin",
       "dest": "/admin-dashboard.html"
+    },
+    {
+      "src": "/profile",
+      "dest": "/profile.html"
     },
     {
       "src": "/",
