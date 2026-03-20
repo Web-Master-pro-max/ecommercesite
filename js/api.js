@@ -24,89 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==================== UTILITY & API FUNCTIONS ====================
 
-// Get backend URL based on environment
-const getBackendUrl = () => {
-    // Check if we're on Vercel (HTTPS) or localhost
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://13.62.153.215:3000';
-    }
-    // On Vercel, use the proxy path (relative)
-    return '';
-};
-
-const BACKEND_BASE_URL = getBackendUrl();
-
-// API Base URL for endpoints
+// Update this line to use your EC2 IP for local development
+// Change this line from your old IP to the new one
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://13.62.153.215:3000/api'
-  : '/api';
-
-console.log('API Base URL:', API_BASE_URL);
-console.log('Backend Base URL:', BACKEND_BASE_URL);
-
-// Helper function to get full image URL
-function getImageUrl(imagePath) {
-    if (!imagePath) return 'https://via.placeholder.com/300x300?text=No+Image';
-    
-    // If it's already a full URL
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        return imagePath;
-    }
-    
-    // If it's a relative path starting with /uploads
-    if (imagePath.startsWith('/uploads')) {
-        // On localhost, use full EC2 URL
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return `http://13.62.153.215:3000${imagePath}`;
-        }
-        // On Vercel, use proxy
-        return imagePath;
-    }
-    
-    // If it's just a filename without path
-    if (!imagePath.startsWith('/')) {
-        // On localhost, use full EC2 URL
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return `http://13.62.153.215:3000/uploads/${imagePath}`;
-        }
-        // On Vercel, use proxy
-        return `/uploads/${imagePath}`;
-    }
-    
-    return imagePath;
-}
-
-// Helper function to get avatar URL for users
-function getAvatarUrl(user) {
-    if (!user) return 'https://via.placeholder.com/40x40?text=User';
-    
-    // If user has avatar
-    if (user.avatar) {
-        // If it's already a full URL
-        if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
-            return user.avatar;
-        }
-        
-        // If it's a relative path
-        if (user.avatar.startsWith('/')) {
-            // On localhost, use full EC2 URL
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                return `http://13.62.153.215:3000${user.avatar}`;
-            }
-            // On Vercel, use proxy
-            return user.avatar;
-        }
-        
-        // If it's just a filename
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return `http://13.62.153.215:3000/uploads/${user.avatar}`;
-        }
-        return `/uploads/${user.avatar}`;
-    }
-    
-    // Default avatar based on user name
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=2874f0&color=fff&bold=true&size=40`;
-}
+  ? 'http://13.62.153.215:3000/api'  // Updated to new IP
+  : '/api';  // Production - use relative path
+console.log('API Base URL:', API_BASE_URL); // Add this for debugging
 
 // ==================== API CALLS ====================
 async function apiCall(endpoint, method = 'GET', data = null) {
@@ -128,14 +51,16 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
 
     const url = `${API_BASE_URL}${endpoint}`;
-    console.log(`Making ${method} request to:`, url);
+    console.log(`Making ${method} request to:`, url); // Debug log
 
     try {
         const response = await fetch(url, options);
         
+        // Log response details for debugging
         console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
         
-        // Handle rate limiting
+        // Handle rate limiting explicitly so we can show a clear message
         if (response.status === 429) {
             throw new Error('Too many requests. Please try again in a moment.');
         }
@@ -146,10 +71,11 @@ async function apiCall(endpoint, method = 'GET', data = null) {
         
         if (contentType && contentType.includes('application/json')) {
             result = await response.json();
-            console.log('Response data:', result);
+            console.log('Response data:', result); // Debug log
         } else {
+            // Non-JSON response (could be HTML error page)
             const text = await response.text();
-            console.error('Non-JSON response:', text.substring(0, 200));
+            console.error('Non-JSON response:', text.substring(0, 200)); // Log first 200 chars
             result = { 
                 error: `Server error: ${response.status}`,
                 statusCode: response.status
@@ -157,12 +83,14 @@ async function apiCall(endpoint, method = 'GET', data = null) {
         }
 
         if (!response.ok) {
+            // Handle authentication errors
             if (response.status === 401) {
                 localStorage.removeItem('user');
-                localStorage.removeItem('token');
+                // Don't redirect immediately, let the calling function handle it
                 throw new Error('Session expired. Please login again.');
             }
             
+            // Handle validation errors from express-validator
             if (result.errors && Array.isArray(result.errors)) {
                 const errorMessage = result.errors.map(err => err.msg).join(', ');
                 throw new Error(errorMessage);
@@ -248,10 +176,10 @@ const addressesAPI = {
     setDefault: (id) => apiCall(`/addresses/${id}/default`, 'PATCH')
 };
 
-// Auth API
+// Auth API - Enhanced with better error handling
 const authAPI = {
     register: async (data) => {
-        console.log('Registering user with email:', data.email);
+        console.log('Registering user with data:', { ...data, password: '[REDACTED]' });
         
         const url = `${API_BASE_URL}/auth/register`;
         console.log('Registration URL:', url);
@@ -655,20 +583,18 @@ function updateNavBar(user) {
     if (!authButtons) return;
 
     if (user) {
-        const avatarUrl = getAvatarUrl(user);
         authButtons.innerHTML = `
             <div style="display: flex; gap: 1rem; align-items: center;">
-                <img src="${avatarUrl}" alt="${user.name}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
                 <span style="color: white;">${user.name}</span>
-                ${user.role === 'admin' ? '<a href="/admin" style="color: white; background: #ff6b35; padding: 0.3rem 0.8rem; border-radius: 4px; text-decoration: none;">Admin</a>' : ''}
-                <a href="#" onclick="logout(event)" style="color: white; text-decoration: none;">Logout</a>
+                ${user.role === 'admin' ? '<a href="/dashboard" style="color: white;">Dashboard</a>' : ''}
+                <a href="#" onclick="logout(event)" style="color: white;">Logout</a>
             </div>
         `;
     } else {
         authButtons.innerHTML = `
             <div style="display: flex; gap: 1rem; align-items: center;">
                 <a href="/login" class="btn btn-primary" style="margin: 0;">Login</a>
-                <a href="/register" class="btn btn-outline" style="margin: 0;">Sign Up</a>
+                <a href="/register" class="btn btn-outline" style="margin: 0;">Register</a>
             </div>
         `;
     }
@@ -681,7 +607,6 @@ async function logout(event) {
         stopSessionRefresh();
         await authAPI.logout();
         localStorage.removeItem('user');
-        localStorage.removeItem('token');
         hideLoading();
         showAlert('Logged out successfully', 'success', 2000);
         setTimeout(() => {
@@ -705,6 +630,7 @@ function handleImageUpload(event) {
     if (!file) return;
     
     const preview = document.getElementById('file-preview');
+    const fileInput = document.getElementById('image-input');
     const previewImg = document.getElementById('preview-img');
     
     const reader = new FileReader();
@@ -813,10 +739,6 @@ async function updateCartCount() {
     }
 }
 
-// Export helper functions for use in other files
-window.getImageUrl = getImageUrl;
-window.getAvatarUrl = getAvatarUrl;
-
 // ==================== INITIALIZATION ====================
 
 // Session refresh interval
@@ -875,7 +797,7 @@ function setupActivityBasedRefresh() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('API Base URL on load:', API_BASE_URL);
+    console.log('API Base URL on load:', API_BASE_URL); // Debug log
     
     try {
         const authData = localStorage.getItem('user');
