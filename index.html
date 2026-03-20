@@ -1414,7 +1414,6 @@
             }
         }
 
-        const BACKEND_BASE_URL = 'http://13.62.153.215:3000';
         const DEFAULT_AVATAR_URL = 'https://static.vecteezy.com/system/resources/thumbnails/017/800/528/small/user-simple-flat-icon-illustration-vector.jpg';
 
         function getAvatarUrl(user) {
@@ -1422,11 +1421,18 @@
                 if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
                     return user.avatar;
                 }
-                // Ensure avatar URL is fetched from backend storage
-                if (user.avatar.startsWith('/')) {
-                    return `${BACKEND_BASE_URL}${user.avatar}`;
+                // Use relative paths to go through Vercel's proxy routing
+                if (user.avatar.startsWith('/uploads/')) {
+                    return user.avatar;
                 }
-                return `${BACKEND_BASE_URL}/${user.avatar}`;
+                if (user.avatar.startsWith('uploads/')) {
+                    return `/${user.avatar}`;
+                }
+                // Assume it's an uploads path if it doesn't start with /
+                if (!user.avatar.startsWith('/')) {
+                    return `/uploads/${user.avatar}`;
+                }
+                return user.avatar;
             }
             return DEFAULT_AVATAR_URL;
         }

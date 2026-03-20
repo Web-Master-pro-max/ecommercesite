@@ -351,6 +351,29 @@
     <script>
         let currentUser = null;
 
+        const DEFAULT_AVATAR_URL = 'https://static.vecteezy.com/system/resources/thumbnails/017/800/528/small/user-simple-flat-icon-illustration-vector.jpg';
+
+        function getAvatarUrl(user) {
+            if (user && user.avatar) {
+                if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
+                    return user.avatar;
+                }
+                // Use relative paths to go through Vercel's proxy routing
+                if (user.avatar.startsWith('/uploads/')) {
+                    return user.avatar;
+                }
+                if (user.avatar.startsWith('uploads/')) {
+                    return `/${user.avatar}`;
+                }
+                // Assume it's an uploads path if it doesn't start with /
+                if (!user.avatar.startsWith('/')) {
+                    return `/uploads/${user.avatar}`;
+                }
+                return user.avatar;
+            }
+            return DEFAULT_AVATAR_URL;
+        }
+
         // Load user profile
         async function loadProfile() {
             try {
@@ -376,6 +399,13 @@
         function populateProfileForm(user) {
             document.getElementById('user-name').textContent = user.name;
             document.getElementById('user-email').textContent = user.email;
+
+            // Display user avatar if available
+            const profileAvatar = document.querySelector('.profile-avatar');
+            if (profileAvatar && user.avatar) {
+                const avatarUrl = getAvatarUrl(user);
+                profileAvatar.innerHTML = `<img src="${avatarUrl}" alt="${user.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
 
             document.getElementById('name').value = user.name || '';
             document.getElementById('email').value = user.email || '';
