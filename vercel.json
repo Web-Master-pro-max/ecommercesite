@@ -53,6 +53,9 @@
       "src": "/images/(.*)",
       "dest": "/images/$1"
     },
+    { "src": "/uploads/(.*)",
+      "dest": "/uploads/$1"
+    },
     {
       "src": "/products",
       "dest": "/products.html"
