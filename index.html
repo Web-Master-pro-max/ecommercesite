@@ -1416,23 +1416,31 @@
 
         const DEFAULT_AVATAR_URL = 'https://static.vecteezy.com/system/resources/thumbnails/017/800/528/small/user-simple-flat-icon-illustration-vector.jpg';
 
+        function normalizeUploadPath(value) {
+            if (!value) return null;
+            if (value.startsWith('http://') || value.startsWith('https://')) {
+                try {
+                    const url = new URL(value);
+                    if (url.pathname.startsWith('/uploads/')) {
+                        return url.pathname;
+                    }
+                } catch { }
+                return value;
+            }
+            if (value.startsWith('/uploads/')) {
+                return value;
+            }
+            if (value.startsWith('uploads/')) {
+                return `/${value}`;
+            }
+            return `/uploads/${value}`;
+        }
+
         function getAvatarUrl(user) {
             if (user && user.avatar) {
-                if (user.avatar.startsWith('http://') || user.avatar.startsWith('https://')) {
-                    return user.avatar;
-                }
-                // Use relative paths to go through Vercel's proxy routing
-                if (user.avatar.startsWith('/uploads/')) {
-                    return user.avatar;
-                }
-                if (user.avatar.startsWith('uploads/')) {
-                    return `/${user.avatar}`;
-                }
-                // Assume it's an uploads path if it doesn't start with /
-                if (!user.avatar.startsWith('/')) {
-                    return `/uploads/${user.avatar}`;
-                }
-                return user.avatar;
+                const normalized = normalizeUploadPath(user.avatar);
+                if (normalized) return normalized;
+                return DEFAULT_AVATAR_URL;
             }
             return DEFAULT_AVATAR_URL;
         }
