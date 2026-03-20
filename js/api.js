@@ -31,6 +31,80 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
   : '/api';  // Production - use relative path
 console.log('API Base URL:', API_BASE_URL); // Add this for debugging
 
+// ==================== IMAGE URL HELPER FUNCTIONS ====================
+
+// Helper function to get full image URL (for product images, avatars, etc.)
+function getFullImageUrl(imagePath) {
+    if (!imagePath) return null;
+    
+    // If it's already a full URL (starts with http:// or https://)
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        // On localhost, return as is
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return imagePath;
+        }
+        // On Vercel, extract path and use relative (to avoid mixed content)
+        try {
+            const url = new URL(imagePath);
+            if (url.pathname.startsWith('/uploads')) {
+                return url.pathname;
+            }
+        } catch (e) {
+            return imagePath;
+        }
+        return imagePath;
+    }
+    
+    // If it's a relative path starting with /uploads
+    if (imagePath.startsWith('/uploads')) {
+        // On localhost, use full EC2 URL
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return `http://13.62.153.215:3000${imagePath}`;
+        }
+        // On Vercel, use relative path (will be proxied)
+        return imagePath;
+    }
+    
+    // If it's just a filename (without /uploads)
+    if (imagePath && !imagePath.startsWith('/')) {
+        // On localhost, use full EC2 URL
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return `http://13.62.153.215:3000/uploads/${imagePath}`;
+        }
+        // On Vercel, use relative path to uploads
+        return `/uploads/${imagePath}`;
+    }
+    
+    // Default return as is
+    return imagePath;
+}
+
+// Helper function to get avatar URL for users
+function getAvatarUrl(user) {
+    if (!user) return 'https://via.placeholder.com/100x100?text=User';
+    
+    // If user has avatar
+    if (user.avatar) {
+        const fullUrl = getFullImageUrl(user.avatar);
+        if (fullUrl) return fullUrl;
+    }
+    
+    // Default avatar using UI Avatars API
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=2874f0&color=fff&bold=true&size=100`;
+}
+
+// Helper function to get product image URL
+function getProductImageUrl(product) {
+    if (!product) return '/images/placeholder.png';
+    
+    if (product.image_url) {
+        const fullUrl = getFullImageUrl(product.image_url);
+        if (fullUrl) return fullUrl;
+    }
+    
+    return '/images/placeholder.png';
+}
+
 // ==================== API CALLS ====================
 async function apiCall(endpoint, method = 'GET', data = null) {
     const options = {

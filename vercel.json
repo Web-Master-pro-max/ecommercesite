@@ -84,6 +84,10 @@
       "dest": "/login.html"
     },
     {
+      "src": "/credits",
+      "dest": "/credits.html"
+    },
+    {
       "src": "/register",
       "dest": "/register.html"
     },

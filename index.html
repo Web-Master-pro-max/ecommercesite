@@ -1414,37 +1414,6 @@
             }
         }
 
-        const DEFAULT_AVATAR_URL = 'https://static.vecteezy.com/system/resources/thumbnails/017/800/528/small/user-simple-flat-icon-illustration-vector.jpg';
-
-        function normalizeUploadPath(value) {
-            if (!value) return null;
-            if (value.startsWith('http://') || value.startsWith('https://')) {
-                try {
-                    const url = new URL(value);
-                    if (url.pathname.startsWith('/uploads/')) {
-                        return url.pathname;
-                    }
-                } catch { }
-                return value;
-            }
-            if (value.startsWith('/uploads/')) {
-                return value;
-            }
-            if (value.startsWith('uploads/')) {
-                return `/${value}`;
-            }
-            return `/uploads/${value}`;
-        }
-
-        function getAvatarUrl(user) {
-            if (user && user.avatar) {
-                const normalized = normalizeUploadPath(user.avatar);
-                if (normalized) return normalized;
-                return DEFAULT_AVATAR_URL;
-            }
-            return DEFAULT_AVATAR_URL;
-        }
-
         async function updateAuthUI() {
             const authButtons = document.getElementById('auth-buttons');
             if (!authButtons) return;
@@ -1453,6 +1422,7 @@
                 const status = await authAPI.checkAuth();
 
                 if (status.authenticated && status.user) {
+                    // Use helper function from api.js
                     const avatarUrl = getAvatarUrl(status.user);
                     authButtons.innerHTML = `
                         <span class="auth-user auth-user-desktop">Hi, ${status.user.name}</span>
